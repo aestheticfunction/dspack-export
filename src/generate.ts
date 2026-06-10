@@ -10,7 +10,8 @@ import { assemble } from './emit/assemble.js';
 import type { ResolvedConfig } from './config.js';
 import type { DspackDocument } from './types.js';
 
-export const GENERATOR_VERSION = '0.0.1';
+// Keep in sync with package.json version (embedded in metadata.generatedBy).
+export const GENERATOR_VERSION = '0.1.0-alpha.0';
 
 export interface GenerateOptions {
   /** ISO 8601 timestamp override for deterministic output. */

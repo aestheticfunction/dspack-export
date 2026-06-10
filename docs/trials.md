@@ -24,6 +24,19 @@ fresh clones (`SKIP_INSTALL=1` to skip).
 | `shadcn-ui/taxonomy` | Tailwind v3 | larger app, same conventions at scale |
 | `satnaing/shadcn-admin` | Tailwind v4 | `@theme`, `@custom-variant dark`, tokens behind `@import './theme.css'` |
 
+## Results (2026-06-10, exporter 0.1.0-alpha.0)
+
+| Repo | Config edits | Result | Notes |
+|---|---|---|---|
+| `shadcn-ui/next-template` (TW v3) | **none** | ✅ valid | 1 component, 19 color tokens, 20 dark overrides; Button variants/defaults match upstream cva |
+| `satnaing/shadcn-admin` (TW v4) | **one** — `css: ["src/styles/index.css"]` (path not in init candidates) | ✅ valid | 148 components; oklch tokens resolved through `@import './theme.css'`; 23 dark overrides; 19 enum props with cva defaults. Before the edit: graceful degradation (components only + 3 precise warnings) |
+| `shadcn-ui/taxonomy` (TW v3, large app) | **none** | ✅ valid | 152 components; `Toaster` missed by docgen but caught by the AST fallback (stub entry); orphan `portalVariants` cva correctly dropped with a warning; Button variants/defaults match upstream |
+
+Observed across trials: component counts include compound sub-parts as flat
+entries (known limitation); both degradation paths (docgen miss → AST
+fallback, cva naming mismatch → drop + warn) fired in real code and behaved
+as designed.
+
 ## What to record per trial
 
 1. Did `init` detect the right paths? Which notes were printed?

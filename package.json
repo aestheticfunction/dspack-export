@@ -1,8 +1,18 @@
 {
   "name": "@aestheticfunction/dspack-export",
-  "version": "0.0.1",
+  "version": "0.1.0-alpha.0",
   "private": true,
-  "description": "Generate dspack v0.2 design-system snapshots from React + Storybook + Tailwind/shadcn codebases",
+  "description": "Generate dspack v0.2 design-system snapshots from React + Tailwind/shadcn codebases",
+  "keywords": [
+    "dspack",
+    "design-system",
+    "design-tokens",
+    "shadcn",
+    "tailwind",
+    "react",
+    "exporter",
+    "ai-agents"
+  ],
   "license": "Apache-2.0",
   "type": "module",
   "main": "dist/cli.js",
