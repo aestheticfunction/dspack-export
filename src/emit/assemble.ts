@@ -21,11 +21,26 @@ export interface AssembleOptions {
   description?: string;
   source?: string;
   generatorVersion: string;
+  /** Override the generatedAt timestamp (ISO 8601) for deterministic output. */
+  generatedAt?: string;
 }
 
 export interface AssembleResult {
   document: DspackDocument;
   warnings: string[];
+}
+
+function mergeProps(
+  base: ComponentEntry['props'],
+  next: ComponentEntry['props'],
+): ComponentEntry['props'] {
+  const out = { ...(base ?? {}) };
+  for (const [name, descriptor] of Object.entries(next ?? {})) {
+    // Field-level merge: higher precedence wins per field, lower fills gaps
+    // (e.g. cva contributes `default` where docgen reports none).
+    out[name] = out[name] ? { ...out[name], ...descriptor } : descriptor;
+  }
+  return out;
 }
 
 function mergeComponents(
@@ -35,7 +50,15 @@ function mergeComponents(
   const out = { ...base };
   for (const [id, entry] of Object.entries(next)) {
     const existing = out[id];
-    out[id] = existing ? { ...existing, ...entry } : entry;
+    if (!existing) {
+      out[id] = entry;
+      continue;
+    }
+    const merged: ComponentEntry = { ...existing, ...entry };
+    if (existing.props || entry.props) {
+      merged.props = mergeProps(existing.props, entry.props);
+    }
+    out[id] = merged;
   }
   return out;
 }
@@ -110,7 +133,7 @@ export function assemble(fragments: SourceFragment[], options: AssembleOptions):
     ...(options.version ? { version: options.version } : {}),
     metadata: {
       generatedBy: `@aestheticfunction/dspack-export@${options.generatorVersion}`,
-      generatedAt: new Date().toISOString(),
+      generatedAt: options.generatedAt ?? new Date().toISOString(),
       ...(options.source ? { source: options.source } : {}),
       note: 'Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated and will be overwritten on regeneration.',
     },

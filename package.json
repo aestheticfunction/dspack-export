@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
-    "generate:fixture": "npm run build && node dist/cli.js generate --config fixtures/shadcn-demo/dspack-export.config.json"
+    "generate:fixture": "npm run build && SOURCE_DATE_EPOCH=1781049600 node dist/cli.js generate --config fixtures/shadcn-demo/dspack-export.config.json"
   },
   "dependencies": {
     "@babel/parser": "^7.28.5",

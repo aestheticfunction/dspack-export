@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "metadata": {
     "generatedBy": "@aestheticfunction/dspack-export@0.0.1",
-    "generatedAt": "2026-06-10T19:09:28.205Z",
+    "generatedAt": "2026-06-10T00:00:00.000Z",
     "source": "fixtures/shadcn-demo",
     "note": "Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated and will be overwritten on regeneration."
   },
@@ -126,6 +126,7 @@
             "destructive",
             "outline"
           ],
+          "default": "default",
           "propRole": "choice"
         }
       }
@@ -135,12 +136,6 @@
       "description": "Displays a button or a component that looks like a button.",
       "x-componentKey": "ui/Button",
       "props": {
-        "asChild": {
-          "type": "boolean",
-          "propRole": "flag",
-          "description": "Render as the child element via Radix Slot instead of a native button.",
-          "default": false
-        },
         "variant": {
           "type": "enum",
           "values": [
@@ -151,6 +146,7 @@
             "ghost",
             "link"
           ],
+          "default": "default",
           "propRole": "choice"
         },
         "size": {
@@ -161,7 +157,14 @@
             "lg",
             "icon"
           ],
+          "default": "default",
           "propRole": "dimension"
+        },
+        "asChild": {
+          "type": "boolean",
+          "propRole": "flag",
+          "description": "Render as the child element via Radix Slot instead of a native button.",
+          "default": false
         }
       }
     },

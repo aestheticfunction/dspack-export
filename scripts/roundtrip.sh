@@ -10,8 +10,10 @@ DS_MCP="${DS_MCP:-../ds-mcp/dist/index.js}"
 DSPACK=fixtures/shadcn-demo/shadcn-demo.dspack.json
 
 npm run build > /dev/null
-node dist/cli.js generate --config fixtures/shadcn-demo/dspack-export.config.json
+# Pinned epoch (2026-06-10T00:00:00Z) keeps the committed golden file byte-stable.
+SOURCE_DATE_EPOCH=1781049600 node dist/cli.js generate --config fixtures/shadcn-demo/dspack-export.config.json
 node dist/cli.js validate "$DSPACK"
+git diff --quiet -- "$DSPACK" || { echo "FAIL: regeneration changed the committed golden file"; exit 1; }
 
 {
   printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"roundtrip","version":"0.0.1"}}}'

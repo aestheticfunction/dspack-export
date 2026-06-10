@@ -12,13 +12,8 @@ import { writeFileSync, readFileSync } from 'node:fs';
 import { relative } from 'node:path';
 import minimist from 'minimist';
 import { loadConfig } from './config.js';
-import { extractWithDocgen } from './sources/docgen.js';
-import { extractWithAst } from './sources/ast/discovery.js';
-import { extractCssVariables } from './sources/tokens/cssVariables.js';
-import { assemble } from './emit/assemble.js';
+import { generateDocument, generatedAtFromEnv } from './generate.js';
 import { validateDspack } from './emit/validate.js';
-
-const GENERATOR_VERSION = '0.0.1';
 
 function usage(): never {
   console.error(
@@ -34,25 +29,10 @@ function usage(): never {
 function runGenerate(configPath: string): void {
   const config = loadConfig(configPath);
 
-  const fragments = [
-    extractWithDocgen({
-      tsconfigPath: config.tsconfigPath,
-      files: config.componentFiles,
-      projectRoot: config.projectRoot,
-    }),
-    extractWithAst({
-      files: config.componentFiles,
-      projectRoot: config.projectRoot,
-    }),
-    extractCssVariables({ files: config.cssFiles }),
-  ];
-
-  const { document, warnings } = assemble(fragments, {
-    name: config.name,
-    version: config.version,
-    description: config.description,
-    source: config.source,
-    generatorVersion: GENERATOR_VERSION,
+  // SOURCE_DATE_EPOCH (reproducible-builds convention) pins generatedAt for
+  // deterministic output, e.g. golden-file tests and reviewable diffs.
+  const { document, warnings } = generateDocument(config, {
+    generatedAt: generatedAtFromEnv(),
   });
 
   const validation = validateDspack(document);
