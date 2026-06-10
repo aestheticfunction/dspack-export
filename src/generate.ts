@@ -5,6 +5,7 @@ import { extractWithDocgen } from './sources/docgen.js';
 import { extractWithAst } from './sources/ast/discovery.js';
 import { extractCvaVariants } from './sources/ast/cvaVariants.js';
 import { extractCssVariables } from './sources/tokens/cssVariables.js';
+import { extractLayout } from './sources/tokens/layout.js';
 import { assemble } from './emit/assemble.js';
 import type { ResolvedConfig } from './config.js';
 import type { DspackDocument } from './types.js';
@@ -35,19 +36,50 @@ export function generatedAtFromEnv(env: NodeJS.ProcessEnv = process.env): string
   return new Date(seconds * 1000).toISOString();
 }
 
+/**
+ * A cva fragment id that matches no extracted component means the
+ * `<name>Variants` naming convention didn't hold. Emitting it would create a
+ * phantom component with a stub description, so drop it and warn.
+ */
+export function dropOrphanCvaComponents(
+  cvaFragment: import('./fragment.js').SourceFragment,
+  knownIds: Set<string>,
+): void {
+  for (const id of Object.keys(cvaFragment.components ?? {})) {
+    if (!knownIds.has(id)) {
+      delete cvaFragment.components![id];
+      cvaFragment.warnings = cvaFragment.warnings ?? [];
+      cvaFragment.warnings.push(
+        `cva variants for "${id}" matched no extracted component (naming convention mismatch?); variant defaults for it were dropped`,
+      );
+    }
+  }
+}
+
 export function generateDocument(config: ResolvedConfig, options: GenerateOptions = {}): GenerateResult {
+  const docgenFragment = extractWithDocgen({
+    tsconfigPath: config.tsconfigPath,
+    files: config.componentFiles,
+    projectRoot: config.projectRoot,
+  });
+  const cvaFragment = extractCvaVariants({ files: config.componentFiles });
+  const astFragment = extractWithAst({
+    files: config.componentFiles,
+    projectRoot: config.projectRoot,
+  });
+
+  const knownIds = new Set([
+    ...Object.keys(docgenFragment.components ?? {}),
+    ...Object.keys(astFragment.components ?? {}),
+  ]);
+  dropOrphanCvaComponents(cvaFragment, knownIds);
+
   const fragments = [
-    extractWithDocgen({
-      tsconfigPath: config.tsconfigPath,
-      files: config.componentFiles,
-      projectRoot: config.projectRoot,
-    }),
-    extractCvaVariants({ files: config.componentFiles }),
-    extractWithAst({
-      files: config.componentFiles,
-      projectRoot: config.projectRoot,
-    }),
+    docgenFragment,
+    cvaFragment,
+    astFragment,
     extractCssVariables({ files: config.cssFiles }),
+    extractLayout({ cssFiles: config.cssFiles }),
   ];
 
   return assemble(fragments, {

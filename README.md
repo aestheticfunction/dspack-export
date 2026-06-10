@@ -7,6 +7,7 @@ snapshots from React + Tailwind/shadcn codebases, ready to serve to AI agents vi
 **Status: prototype.** Not yet published to npm.
 
 ```bash
+dspack-export init                                    # detect conventions, write config
 dspack-export generate --config dspack-export.config.json
 dspack-export validate my-system.dspack.json
 ```

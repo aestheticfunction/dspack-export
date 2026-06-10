@@ -14,11 +14,13 @@ import minimist from 'minimist';
 import { loadConfig } from './config.js';
 import { generateDocument, generatedAtFromEnv } from './generate.js';
 import { validateDspack } from './emit/validate.js';
+import { initConfig } from './init.js';
 
 function usage(): never {
   console.error(
     [
       'Usage:',
+      '  dspack-export init [--force]',
       '  dspack-export generate --config <dspack-export.config.json>',
       '  dspack-export validate <file.dspack.json>',
     ].join('\n'),
@@ -74,7 +76,12 @@ const argv = minimist(process.argv.slice(2));
 const [command, positional] = argv._;
 
 try {
-  if (command === 'generate') {
+  if (command === 'init') {
+    const { configPath, notes } = initConfig(process.cwd(), Boolean(argv.force));
+    console.log(`✓ Wrote ${configPath}`);
+    console.log('  Review and edit it, then run: dspack-export generate');
+    for (const note of notes) console.log(`  note: ${note}`);
+  } else if (command === 'generate') {
     const configPath = (argv.config as string | undefined) ?? 'dspack-export.config.json';
     runGenerate(configPath);
   } else if (command === 'validate') {

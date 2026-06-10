@@ -253,5 +253,33 @@
         "color.ring": "hsl(212.7 26.8% 83.9%)"
       }
     }
+  },
+  "layout": {
+    "breakpoints": {
+      "sm": {
+        "minWidth": "640px",
+        "description": "Small devices and large phones in landscape."
+      },
+      "md": {
+        "minWidth": "768px",
+        "description": "Tablets."
+      },
+      "lg": {
+        "minWidth": "1024px",
+        "description": "Laptops and small desktops."
+      },
+      "xl": {
+        "minWidth": "1280px",
+        "description": "Desktops."
+      },
+      "2xl": {
+        "minWidth": "1536px",
+        "description": "Large desktops."
+      }
+    },
+    "spacingScale": {
+      "baseUnit": "0.25rem",
+      "description": "Spacing follows a 0.25rem base unit; use integer multiples of the scale."
+    }
   }
 }

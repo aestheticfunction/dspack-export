@@ -1,0 +1,176 @@
+{
+  "dspack": "0.2",
+  "name": "Shadcn V4 Demo",
+  "description": "Tailwind v4 / @theme-style fixture for dspack-export.",
+  "version": "1.0.0",
+  "metadata": {
+    "generatedBy": "@aestheticfunction/dspack-export@0.0.1",
+    "generatedAt": "2026-06-10T00:00:00.000Z",
+    "source": "fixtures/shadcn-v4-demo",
+    "note": "Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated and will be overwritten on regeneration."
+  },
+  "tokens": {
+    "color": {
+      "description": "Semantic color tokens extracted from CSS custom properties. Values are the default (light) theme.",
+      "tier": "semantic",
+      "values": {
+        "brand": {
+          "value": "oklch(0.6 0.2 250)",
+          "type": "color"
+        },
+        "background": {
+          "value": "oklch(1 0 0)",
+          "type": "color",
+          "description": "Page background color."
+        },
+        "foreground": {
+          "value": "oklch(0.145 0 0)",
+          "type": "color",
+          "description": "Default text color on the page background."
+        },
+        "primary": {
+          "value": "oklch(0.205 0 0)",
+          "type": "color",
+          "description": "Primary brand color for prominent interactive elements."
+        },
+        "primary-foreground": {
+          "value": "oklch(0.985 0 0)",
+          "type": "color",
+          "description": "Text color on primary-colored surfaces."
+        },
+        "secondary": {
+          "value": "oklch(0.97 0 0)",
+          "type": "color",
+          "description": "Secondary surface color for less prominent elements."
+        },
+        "secondary-foreground": {
+          "value": "oklch(0.205 0 0)",
+          "type": "color",
+          "description": "Text color on secondary surfaces."
+        },
+        "destructive": {
+          "value": "oklch(0.577 0.245 27.325)",
+          "type": "color",
+          "description": "Color for destructive actions and errors."
+        },
+        "border": {
+          "value": "oklch(0.922 0 0)",
+          "type": "color",
+          "description": "Default border color."
+        },
+        "ring": {
+          "value": "oklch(0.708 0 0)",
+          "type": "color",
+          "description": "Focus ring color."
+        }
+      }
+    },
+    "radius": {
+      "description": "Border radius tokens extracted from CSS custom properties.",
+      "tier": "semantic",
+      "values": {
+        "radius": {
+          "value": "0.625rem",
+          "type": "borderRadius"
+        }
+      }
+    }
+  },
+  "components": {
+    "button": {
+      "name": "Button",
+      "description": "Displays a button or a component that looks like a button.",
+      "x-componentKey": "ui/Button",
+      "props": {
+        "variant": {
+          "type": "enum",
+          "values": [
+            "default",
+            "destructive",
+            "outline",
+            "secondary",
+            "ghost"
+          ],
+          "default": "default",
+          "propRole": "choice"
+        },
+        "size": {
+          "type": "enum",
+          "values": [
+            "default",
+            "sm",
+            "lg",
+            "icon"
+          ],
+          "default": "default",
+          "propRole": "dimension"
+        },
+        "asChild": {
+          "type": "boolean",
+          "propRole": "flag",
+          "description": "Render as the child element via Radix Slot instead of a native button.",
+          "default": false
+        }
+      }
+    }
+  },
+  "frameworkBindings": {
+    "react": {
+      "name": "React",
+      "components": {
+        "button": {
+          "importPath": "./components/ui/button",
+          "exportName": "Button"
+        }
+      }
+    }
+  },
+  "themes": {
+    "dark": {
+      "name": "Dark",
+      "description": "Dark theme overrides extracted from the .dark CSS block.",
+      "overrides": {
+        "color.background": "oklch(0.145 0 0)",
+        "color.foreground": "oklch(0.985 0 0)",
+        "color.primary": "oklch(0.922 0 0)",
+        "color.primary-foreground": "oklch(0.205 0 0)",
+        "color.secondary": "oklch(0.269 0 0)",
+        "color.secondary-foreground": "oklch(0.985 0 0)",
+        "color.destructive": "oklch(0.704 0.191 22.216)",
+        "color.border": "oklch(1 0 0 / 10%)",
+        "color.ring": "oklch(0.556 0 0)"
+      }
+    }
+  },
+  "layout": {
+    "breakpoints": {
+      "sm": {
+        "minWidth": "640px",
+        "description": "Small devices and large phones in landscape."
+      },
+      "md": {
+        "minWidth": "768px",
+        "description": "Tablets."
+      },
+      "lg": {
+        "minWidth": "1024px",
+        "description": "Laptops and small desktops."
+      },
+      "xl": {
+        "minWidth": "1280px",
+        "description": "Desktops."
+      },
+      "2xl": {
+        "minWidth": "1536px",
+        "description": "Large desktops."
+      },
+      "3xl": {
+        "minWidth": "1920px"
+      }
+    },
+    "spacingScale": {
+      "baseUnit": "0.25rem",
+      "description": "Spacing follows a 0.25rem base unit; use integer multiples of the scale."
+    }
+  }
+}

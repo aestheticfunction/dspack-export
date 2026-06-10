@@ -60,14 +60,70 @@ function collectVars(css: string, selectorPattern: RegExp): VarBlock {
   const blockRe = new RegExp(selectorPattern.source + String.raw`\s*\{([^{}]*)\}`, 'g');
   let m: RegExpExecArray | null;
   while ((m = blockRe.exec(css)) !== null) {
-    const body = m[1];
-    const varRe = /--([a-zA-Z0-9-]+)\s*:\s*([^;]+);/g;
-    let v: RegExpExecArray | null;
-    while ((v = varRe.exec(body)) !== null) {
-      vars.set(v[1], v[2].trim());
-    }
+    collectVarsFromBody(m[1], vars);
   }
   return { vars };
+}
+
+function collectVarsFromBody(body: string, vars: Map<string, string>): void {
+  const varRe = /--([a-zA-Z0-9-]+)\s*:\s*([^;]+);/g;
+  let v: RegExpExecArray | null;
+  while ((v = varRe.exec(body)) !== null) {
+    vars.set(v[1], v[2].trim());
+  }
+}
+
+/**
+ * Collect custom properties from `@theme { ... }` blocks (Tailwind v4).
+ * Unlike :root/.dark, @theme bodies can nest @keyframes, so this scans for
+ * the matching closing brace instead of using a flat regex.
+ */
+function collectThemeVars(css: string): VarBlock {
+  const vars = new Map<string, string>();
+  const themeRe = /@theme[^{]*\{/g;
+  let m: RegExpExecArray | null;
+  while ((m = themeRe.exec(css)) !== null) {
+    let depth = 1;
+    let i = m.index + m[0].length;
+    const start = i;
+    while (i < css.length && depth > 0) {
+      if (css[i] === '{') depth++;
+      else if (css[i] === '}') depth--;
+      i++;
+    }
+    collectVarsFromBody(css.slice(start, i - 1), vars);
+  }
+  return { vars };
+}
+
+/** Values referencing other variables (var()/calc(var())) are unresolved — the
+ *  resolved value lives on the referenced :root property, so these are skipped. */
+function isUnresolvedReference(value: string): boolean {
+  return value.includes('var(');
+}
+
+export interface ParsedCssVars {
+  rootVars: Map<string, string>;
+  darkVars: Map<string, string>;
+  /** Tailwind v4 @theme variables (namespaced: color-*, radius-*, breakpoint-*, spacing, …). */
+  themeVars: Map<string, string>;
+  warnings: string[];
+}
+
+/** Shared CSS parse used by the token and layout extractors. */
+export function parseCssVars(files: string[]): ParsedCssVars {
+  const warnings: string[] = [];
+  let combined = '';
+  for (const file of files) {
+    combined += '\n' + readWithImports(file, warnings);
+  }
+  combined = stripComments(combined);
+  return {
+    rootVars: collectVars(combined, /:root/).vars,
+    darkVars: collectVars(combined, /\.dark(?:\s+\*)?/).vars,
+    themeVars: collectThemeVars(combined).vars,
+    warnings,
+  };
 }
 
 /** Resolve relative @import statements one level deep (survey: sufficient for './theme.css' splits). */
@@ -109,20 +165,28 @@ export function normalizeCssValue(raw: string): { value: string; type?: string }
 }
 
 export function extractCssVariables(options: CssVariablesOptions): SourceFragment {
-  const warnings: string[] = [];
-  let combined = '';
-  for (const file of options.files) {
-    combined += '\n' + readWithImports(file, warnings);
-  }
-  combined = stripComments(combined);
-
-  const rootVars = collectVars(combined, /:root/);
-  const darkVars = collectVars(combined, /\.dark(?:\s+\*)?/);
+  const { rootVars, darkVars, themeVars, warnings } = parseCssVars(options.files);
 
   const colorValues: Record<string, TokenEntry> = {};
   const radiusValues: Record<string, TokenEntry> = {};
 
-  for (const [name, raw] of rootVars.vars) {
+  // Tailwind v4 @theme tokens with direct values (var() references resolve to
+  // :root properties that are extracted below, so they are skipped here).
+  for (const [name, raw] of themeVars) {
+    if (isUnresolvedReference(raw)) continue;
+    const colorMatch = name.match(/^color-(.+)$/);
+    const radiusMatch = name.match(/^radius(?:-(.+))?$/);
+    if (colorMatch) {
+      const { value } = normalizeCssValue(raw);
+      colorValues[colorMatch[1]] = { value, type: 'color' };
+    } else if (radiusMatch) {
+      const { value } = normalizeCssValue(raw);
+      radiusValues[radiusMatch[1] ?? 'radius'] = { value, type: 'borderRadius' };
+    }
+  }
+
+  for (const [name, raw] of rootVars) {
+    if (isUnresolvedReference(raw)) continue;
     const { value, type } = normalizeCssValue(raw);
     const entry: TokenEntry = { value };
     if (type) entry.type = name === 'radius' ? 'borderRadius' : type;
@@ -140,7 +204,8 @@ export function extractCssVariables(options: CssVariablesOptions): SourceFragmen
   }
 
   const overrides: Record<string, string> = {};
-  for (const [name, raw] of darkVars.vars) {
+  for (const [name, raw] of darkVars) {
+    if (isUnresolvedReference(raw)) continue;
     const { value } = normalizeCssValue(raw);
     if (colorValues[name]) overrides[`color.${name}`] = value;
     else if (radiusValues[name]) overrides[`radius.${name}`] = value;

@@ -1,0 +1,10 @@
+{
+  "name": "Shadcn V4 Demo",
+  "version": "1.0.0",
+  "description": "Tailwind v4 / @theme-style fixture for dspack-export.",
+  "source": "fixtures/shadcn-v4-demo",
+  "components": ["components/ui/*.tsx"],
+  "css": ["styles/globals.css"],
+  "tsconfig": "tsconfig.json",
+  "output": "shadcn-v4-demo.dspack.json"
+}

@@ -122,3 +122,17 @@ describe('token extraction', () => {
     expect(dark?.overrides['color.ring']).toBe('hsl(212.7 26.8% 83.9%)');
   });
 });
+
+describe('layout extraction', () => {
+  const document = generateFixture();
+
+  it('emits Tailwind default breakpoints when the project declares none', () => {
+    const breakpoints = document.layout?.breakpoints ?? {};
+    expect(Object.keys(breakpoints)).toEqual(['sm', 'md', 'lg', 'xl', '2xl']);
+    expect(breakpoints['md']?.minWidth).toBe('768px');
+  });
+
+  it('emits the Tailwind spacing scale base unit', () => {
+    expect(document.layout?.spacingScale?.baseUnit).toBe('0.25rem');
+  });
+});
