@@ -29,6 +29,12 @@ props (including cva variant enums **and their defaults**), semantic color/radiu
 tokens from CSS custom properties (Tailwind v3 and v4 conventions), dark-theme
 overrides, layout breakpoints, and React import bindings.
 
+Tokens can also be imported from a **DTCG design-token JSON file** — the
+interchange format that Figma exports, Tokens Studio, and Style Dictionary can
+produce — via the `tokens` config field. This is a file-based snapshot import,
+not a tool integration: no Figma API, no network. See
+[Importing design token files](docs/handbook.md#importing-design-token-files-dtcg).
+
 Validated against real repositories — see [trial results](docs/trials.md):
 shadcn-ui/next-template and shadcn-ui/taxonomy with zero config edits,
 satnaing/shadcn-admin with one.

@@ -70,8 +70,53 @@ Deterministic output (reviewable diffs, golden files): set
 | Tailwind v4 token CSS (`@theme`, oklch, `@custom-variant dark`) | ✅ | `var()`-reference entries skipped (resolved value taken from `:root`) |
 | Relative CSS `@import` | ✅ | one level deep |
 | Breakpoints / spacing scale | ✅ | Tailwind defaults, extended by `@theme --breakpoint-*` / `--spacing` |
+| Design token files (DTCG JSON) | ✅ | local file import; resolved values only; `color`, `dimension`, `fontFamily`, `fontWeight` — see [Importing design token files](#importing-design-token-files-dtcg) |
 | Storybook | ❌ not yet | planned enrichment (stories, snippets); not required |
-| Vue / Svelte / CSS Modules / JS `tailwind.config` screens / Figma | ❌ | out of scope for alpha |
+| Vue / Svelte / CSS Modules / JS `tailwind.config` screens / direct Figma/Tokens Studio/Style Dictionary integration | ❌ | out of scope |
+
+## Importing design token files (DTCG)
+
+If your tokens live in a **DTCG-format JSON file** (the W3C Design Tokens
+Community Group format), point the config at it with `tokens`:
+
+```json
+{
+  "name": "acme-ui",
+  "components": ["components/ui/*.tsx"],
+  "tokens": ["tokens/tokens.json"],
+  "css": ["app/globals.css"],
+  "tsconfig": "tsconfig.json"
+}
+```
+
+This is a **snapshot import path**, not an integration. The file is read from
+disk and folded into the snapshot — there is no network call, no Figma API, no
+running tool. Several tools can *produce* such a file as an upstream step, and
+any of them works as long as the output is DTCG JSON:
+
+- a **Figma** variables export / Figma MCP token dump,
+- **Tokens Studio** (export to DTCG),
+- **Style Dictionary** (DTCG source files).
+
+dspack-export has no tool-specific logic for any of these — it reads the
+resulting file, nothing more.
+
+**What it imports:** `color`, `dimension`, `fontFamily`, and `fontWeight`
+tokens with **resolved** values. The top-level group becomes the dspack token
+category; nested groups flatten into kebab-cased names.
+
+**What it skips (with a warning):**
+- alias/reference values like `"{color.primary}"` — alias resolution is not
+  performed in this version; resolve them in your token tool before export,
+- other `$types` (typography composites, shadow, duration, …) that have no
+  safe single-string dspack mapping.
+
+**Precedence:** if both a token file and CSS define the same token (same
+category + name), the **token file wins** — it is the designer's source of
+truth, versus values scraped from compiled CSS. Tokens that exist in only one
+source are kept from that source.
+
+`css` and `tokens` are each optional, but at least one must be present.
 
 ## Config examples
 
@@ -119,6 +164,11 @@ All relative paths resolve against the config file's directory.
   `antiPatterns`, `whenToUse`, `accessibility`, `composition`, `constraints`)
   and **regeneration overwrites the output file** — keep hand edits in a
   separate copy for now (a merge workflow is on the roadmap).
+- **DTCG import is resolved-values-only.** Alias/reference values are skipped
+  (resolve them in your token tool first); only `color`, `dimension`,
+  `fontFamily`, and `fontWeight` types are mapped; other types are skipped with
+  a warning. Theme/mode import from DTCG files is not supported yet (dark themes
+  still come from CSS `.dark` blocks).
 
 ## Troubleshooting
 
@@ -128,7 +178,8 @@ All relative paths resolve against the config file's directory.
 | Props missing, component present with stub description | TS checker couldn't parse the component — check the warning naming the file; verify it compiles in your project |
 | `variant`/`size` have values but no `default` | cva call has no `defaultVariants`, or the cva variable name doesn't match `<component>Variants` (see warnings) |
 | `tokens: 0` plus a CSS warning | Wrong `css` path, or tokens live behind a package-level `@import` — list the real file(s) explicitly in `css` |
-| Dark overrides missing | Dark values not in a `.dark { … }` block (e.g. media-query-only theming is not read yet) |
+| DTCG tokens skipped with warnings | Values are aliases (`"{…}"` — resolve them before export) or an unsupported `$type` (only `color`/`dimension`/`fontFamily`/`fontWeight` are imported) |
+| Dark overrides missing | Dark values not in a `.dark { … }` block (e.g. media-query-only theming is not read yet); DTCG theme import is not supported yet |
 | Generation exits non-zero with schema errors | Please report — the generator should never emit invalid documents |
 
 ## What's deliberately not here
@@ -139,3 +190,9 @@ reconciliation, or write-back to code/design tools — keeping a design system
 *aligned over time* is [Aesthetic Function](https://github.com/aestheticfunction/aesthetic-function),
 the commercial product. Feature requests in that direction will be declined
 with a pointer, not triaged.
+
+Token import follows the same rule: dspack-export *reads* a token file someone
+else produced and folds it into the snapshot. It does not connect to Figma,
+call any design-tool API, or write tokens back to a design tool. Direct Figma
+integration, drift detection, reconciliation, and write-back remain out of
+scope — only the snapshot import direction (token file → dspack) is supported.

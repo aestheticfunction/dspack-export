@@ -1,0 +1,149 @@
+{
+  "dspack": "0.2",
+  "name": "DTCG Tokens Demo",
+  "description": "Fixture exercising DTCG design-token-file import alongside CSS token extraction.",
+  "version": "1.0.0",
+  "metadata": {
+    "generatedBy": "@aestheticfunction/dspack-export@0.1.0-alpha.0",
+    "generatedAt": "2026-06-10T00:00:00.000Z",
+    "source": "fixtures/dtcg-tokens-demo",
+    "note": "Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated and will be overwritten on regeneration."
+  },
+  "tokens": {
+    "color": {
+      "description": "Imported from a design token file (color).",
+      "tier": "semantic",
+      "values": {
+        "primary": {
+          "value": "#2563eb",
+          "type": "color",
+          "description": "Primary brand color (authoritative value from the design token file)."
+        },
+        "background": {
+          "value": "hsl(0 0% 100%)",
+          "type": "color",
+          "description": "Page background color."
+        },
+        "foreground": {
+          "value": "hsl(222.2 84% 4.9%)",
+          "type": "color",
+          "description": "Default text color on the page background."
+        },
+        "border": {
+          "value": "hsl(214.3 31.8% 91.4%)",
+          "type": "color",
+          "description": "Default border color."
+        },
+        "accent": {
+          "value": "#f59e0b",
+          "type": "color"
+        }
+      }
+    },
+    "spacing": {
+      "description": "Imported from a design token file (spacing).",
+      "tier": "semantic",
+      "values": {
+        "sm": {
+          "value": "8px",
+          "type": "dimension"
+        },
+        "md": {
+          "value": "16px",
+          "type": "dimension"
+        }
+      }
+    },
+    "font": {
+      "description": "Imported from a design token file (font).",
+      "tier": "semantic",
+      "values": {
+        "sans": {
+          "value": "Inter, system-ui, sans-serif",
+          "type": "fontFamily"
+        },
+        "weight-bold": {
+          "value": "700",
+          "type": "fontWeight"
+        }
+      }
+    }
+  },
+  "components": {
+    "button": {
+      "name": "Button",
+      "description": "Displays a button or a component that looks like a button.",
+      "x-componentKey": "ui/Button",
+      "props": {
+        "variant": {
+          "type": "enum",
+          "values": [
+            "default",
+            "outline"
+          ],
+          "default": "default",
+          "propRole": "choice"
+        },
+        "size": {
+          "type": "enum",
+          "values": [
+            "default",
+            "sm"
+          ],
+          "default": "default",
+          "propRole": "dimension"
+        }
+      }
+    }
+  },
+  "frameworkBindings": {
+    "react": {
+      "name": "React",
+      "components": {
+        "button": {
+          "importPath": "./components/ui/button",
+          "exportName": "Button"
+        }
+      }
+    }
+  },
+  "themes": {
+    "dark": {
+      "name": "Dark",
+      "description": "Dark theme overrides extracted from the .dark CSS block.",
+      "overrides": {
+        "color.background": "hsl(222.2 84% 4.9%)",
+        "color.foreground": "hsl(210 40% 98%)",
+        "color.border": "hsl(217.2 32.6% 17.5%)"
+      }
+    }
+  },
+  "layout": {
+    "breakpoints": {
+      "sm": {
+        "minWidth": "640px",
+        "description": "Small devices and large phones in landscape."
+      },
+      "md": {
+        "minWidth": "768px",
+        "description": "Tablets."
+      },
+      "lg": {
+        "minWidth": "1024px",
+        "description": "Laptops and small desktops."
+      },
+      "xl": {
+        "minWidth": "1280px",
+        "description": "Desktops."
+      },
+      "2xl": {
+        "minWidth": "1536px",
+        "description": "Large desktops."
+      }
+    },
+    "spacingScale": {
+      "baseUnit": "0.25rem",
+      "description": "Spacing follows a 0.25rem base unit; use integer multiples of the scale."
+    }
+  }
+}

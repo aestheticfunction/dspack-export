@@ -1,0 +1,11 @@
+{
+  "name": "DTCG Tokens Demo",
+  "version": "1.0.0",
+  "description": "Fixture exercising DTCG design-token-file import alongside CSS token extraction.",
+  "source": "fixtures/dtcg-tokens-demo",
+  "components": ["components/ui/*.tsx"],
+  "css": ["styles/globals.css"],
+  "tokens": ["tokens/tokens.json"],
+  "tsconfig": "tsconfig.json",
+  "output": "dtcg-tokens-demo.dspack.json"
+}

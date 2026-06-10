@@ -22,6 +22,13 @@ const CSS_CANDIDATES = [
   'src/index.css',
 ];
 
+const TOKEN_FILE_CANDIDATES = [
+  'tokens.json',
+  'design-tokens.json',
+  'tokens/tokens.json',
+  'src/tokens.json',
+];
+
 export interface InitResult {
   configPath: string;
   config: ExporterConfig;
@@ -69,11 +76,15 @@ export function initConfig(projectRoot: string, force = false): InitResult {
     notes.push('No tsconfig.json found; prop extraction requires one — edit "tsconfig" before generating.');
   }
 
+  // DTCG design-token file is optional; only added to the config when detected.
+  const tokenFile = TOKEN_FILE_CANDIDATES.find((file) => existsSync(join(projectRoot, file)));
+
   const config: ExporterConfig = {
     name,
     ...(version ? { version } : {}),
     components: [`${componentDir ?? 'components/ui'}/*.tsx`],
     css: [css ?? 'app/globals.css'],
+    ...(tokenFile ? { tokens: [tokenFile] } : {}),
     tsconfig: 'tsconfig.json',
   };
 

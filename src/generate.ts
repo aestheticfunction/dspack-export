@@ -5,6 +5,7 @@ import { extractWithDocgen } from './sources/docgen.js';
 import { extractWithAst } from './sources/ast/discovery.js';
 import { extractCvaVariants } from './sources/ast/cvaVariants.js';
 import { extractCssVariables } from './sources/tokens/cssVariables.js';
+import { extractDesignTokens } from './sources/tokens/designTokens.js';
 import { extractLayout } from './sources/tokens/layout.js';
 import { assemble } from './emit/assemble.js';
 import type { ResolvedConfig } from './config.js';
@@ -75,13 +76,19 @@ export function generateDocument(config: ResolvedConfig, options: GenerateOption
   ]);
   dropOrphanCvaComponents(cvaFragment, knownIds);
 
-  const fragments = [
-    docgenFragment,
-    cvaFragment,
-    astFragment,
-    extractCssVariables({ files: config.cssFiles }),
-    extractLayout({ cssFiles: config.cssFiles }),
-  ];
+  const fragments = [docgenFragment, cvaFragment, astFragment];
+
+  // CSS custom-property tokens + layout (only when CSS files are configured).
+  if (config.cssFiles.length > 0) {
+    fragments.push(extractCssVariables({ files: config.cssFiles }));
+    fragments.push(extractLayout({ cssFiles: config.cssFiles }));
+  }
+
+  // DTCG design-token files. Higher precedence than CSS (set in the source),
+  // so an explicit token file wins over the same token scraped from CSS.
+  if (config.tokensFiles.length > 0) {
+    fragments.push(extractDesignTokens({ files: config.tokensFiles }));
+  }
 
   return assemble(fragments, {
     name: config.name,

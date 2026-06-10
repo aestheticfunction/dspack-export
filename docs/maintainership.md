@@ -24,8 +24,20 @@ changing anything outside the output file, it fails the test.
 | "Read my Storybook stories/descriptions" | **Defer to roadmap.** | Planned as optional enrichment from the static manifest only (no dev-server/addon dependency). |
 | "Support Vue / Svelte / Angular" | **Require an RFC-style proposal first**; don't accept drive-by adapter PRs. | Each framework is a permanent maintenance commitment. The `SourceFragment` seam makes it *possible*; the proposal must show who maintains it. |
 | "Parse my customized tailwind.config.js screens" | **Defer; lean no.** | v3 JS-config parsing was deliberately cut; `@theme` covers v4 and the config escape hatch covers the rest. Revisit only with evidence of frequent real-world need. |
-| "Read tokens from Figma" | **Decline in this repo.** | Design-tool reading sits next to AF's territory; if it ever happens it is a deliberate product decision, potentially as a separate (possibly commercial) `SourceFragment` plugin — not a drive-by PR. |
+| "Import my **DTCG token file**" / "read my exported design tokens JSON" | **Supported.** This is the file-based token import path (`tokens` config). | Snapshot-only, file-in: a token file someone else produced is folded into the snapshot. Stays on the safe side of the line — see the import-vs-integration distinction below. |
+| "Connect directly to **Figma** / call the Figma API / live-sync Figma variables" | **Decline.** | That is integration, not file import — it crosses into design-tool reading and AF territory. The supported path is: export a DTCG file from Figma, then point `tokens` at it. No direct API, ever, in this repo. |
+| "Add **Tokens Studio / Style Dictionary**-specific parsing" | **Decline / require justification.** | We import the *common* DTCG format only. Tool-specific formats (`$themes`, token sets, SD transforms) would multiply maintenance. If a tool emits DTCG, it already works. |
+| "Resolve token **aliases** (`{color.primary}`) during import" | **Defer; lean cautious.** | Resolution is a small graph engine that grows quickly (cross-file refs, cycles, modes). Today aliases are skipped with a warning; resolve them in the upstream tool. Revisit only with strong demand and a tight spec. |
 | "Publish my dspack to a registry/CDN" | **Decline.** | Distribution of generated files is the user's concern; ds-mcp covers agent serving. |
+
+### Import vs. integration (the token-file line)
+
+Importing a **token file** is supported and on the right side of the boundary:
+a file produced elsewhere is read once and folded into the snapshot — no
+network, no design-tool API, no write-back. **Integration** (calling Figma,
+syncing live variables, writing tokens back) is not, and never will be in this
+repo. The test is direction and statefulness: *file → dspack, once* is fine;
+*talk to a tool / remember a prior state / write outward* is not.
 
 ## How to decline well
 
