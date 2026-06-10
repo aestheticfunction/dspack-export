@@ -1,7 +1,8 @@
-# dspack-export — Private Alpha Handbook
+# dspack-export — Handbook
 
-Status: **private alpha** (`0.1.0-alpha.0`). Not on npm; install from this
-repository. Expect rough edges — please report everything that surprises you.
+Status: **experimental** (`0.1.0-alpha.0`). Not on npm; install from this
+repository. Expect rough edges — please report everything that surprises you
+(see [CONTRIBUTING](../CONTRIBUTING.md) for the issue templates to use).
 
 ## What it does
 
@@ -16,10 +17,10 @@ It answers *"what does my design system look like right now."* It does not
 watch, diff, repair, or enforce anything — see
 [Boundary](#whats-deliberately-not-here).
 
-## Installation (private alpha)
+## Installation (from source)
 
 ```bash
-git clone <this-repo> dspack-export
+git clone https://github.com/aestheticfunction/dspack-export
 cd dspack-export
 npm install
 npm run build

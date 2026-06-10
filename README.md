@@ -4,9 +4,19 @@ Generate [dspack](https://github.com/aestheticfunction/dspack) v0.2 design-syste
 snapshots from React + Tailwind/shadcn codebases, ready to serve to AI agents via
 [ds-mcp](https://github.com/aestheticfunction/ds-mcp).
 
-**Status: private alpha** (`0.1.0-alpha.0`). Not published to npm; install from
-this repository — see the [handbook](docs/handbook.md) for setup, supported
-stack, limitations, and troubleshooting.
+**Status: experimental** (`0.1.0-alpha.0`). Config format and output details
+may still change between versions. Not yet published to npm — install from
+source (below). The [handbook](docs/handbook.md) covers the supported stack,
+known limitations, and troubleshooting.
+
+## Install (from source)
+
+```bash
+git clone https://github.com/aestheticfunction/dspack-export
+cd dspack-export && npm install && npm run build && npm link
+```
+
+Then, from your design-system project (with its own dependencies installed):
 
 ```bash
 dspack-export init                                    # detect conventions, write config
@@ -42,6 +52,13 @@ npm run generate:fixture          # regenerate the fixture snapshot (pinned epoc
 DS_MCP=../ds-mcp/dist/index.js scripts/roundtrip.sh   # end-to-end gate check
 scripts/trial.sh <repo-url>       # run against a real repo (docs/trials.md)
 ```
+
+## Contributing & scope
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) — especially the scope section before
+proposing features — plus [SECURITY.md](SECURITY.md) (the tool's three
+invariants: writes only its output file, no network, no shell execution) and
+[docs/maintainership.md](docs/maintainership.md).
 
 ## License
 

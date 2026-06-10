@@ -25,6 +25,14 @@
   "author": {
     "name": "Ryan Dombrowski"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aestheticfunction/dspack-export.git"
+  },
+  "homepage": "https://github.com/aestheticfunction/dspack-export#readme",
+  "bugs": {
+    "url": "https://github.com/aestheticfunction/dspack-export/issues"
+  },
   "scripts": {
     "build": "tsc",
     "test": "vitest run",

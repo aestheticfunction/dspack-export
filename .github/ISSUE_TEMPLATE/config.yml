@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: dspack format / schema proposals
+    url: https://github.com/aestheticfunction/dspack
+    about: Changes to the dspack file format belong in the specification repository.
+  - name: ds-mcp (serving dspack files to agents)
+    url: https://github.com/aestheticfunction/ds-mcp
+    about: Issues about querying/serving generated files belong in ds-mcp.
+  - name: Keeping code and design aligned over time
+    url: https://github.com/aestheticfunction/aesthetic-function
+    about: Drift detection, reconciliation, and write-back are Aesthetic Function's domain, not this tool's.
