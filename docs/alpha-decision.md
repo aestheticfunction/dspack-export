@@ -1,5 +1,13 @@
 # Alpha Decision Report (2026-06-10)
 
+> **Status update (same day):** the private-alpha gate described in the
+> recommendation below was waived — no additional internal alpha users were
+> available, and the maintainer served as both implementer and alpha user.
+> The project proceeded directly to public-release preparation
+> (governance files, scope playbook, fresh-clone validation) and ships
+> publicly under an **experimental** label. The analysis sections below are
+> retained as the record of what was evaluated.
+
 ## What works (evidence-backed)
 
 - **End-to-end pipeline on real repos**: three trials (next-template, taxonomy,

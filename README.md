@@ -33,6 +33,26 @@ Validated against real repositories — see [trial results](docs/trials.md):
 shadcn-ui/next-template and shadcn-ui/taxonomy with zero config edits,
 satnaing/shadcn-admin with one.
 
+## How it fits the ecosystem
+
+```
+your React/Tailwind codebase
+        │
+        ▼
+  dspack-export  ──────►  your-system.dspack.json  ──────►  ds-mcp  ──────►  AI agents
+  (this repo:              (open format, defined by         (serves it       (Claude, Cursor, …)
+   snapshot generator)      the dspack specification)        over MCP)
+```
+
+- **[dspack](https://github.com/aestheticfunction/dspack)** — the open
+  specification: what a design-system snapshot contains.
+- **dspack-export** (this repo) — generates a spec-valid snapshot from code.
+- **[ds-mcp](https://github.com/aestheticfunction/ds-mcp)** — serves a
+  snapshot to MCP-compatible AI agents, read-only.
+- **[Aesthetic Function](https://github.com/aestheticfunction/aesthetic-function)**
+  — the commercial product for the *time* dimension: detecting and
+  reconciling drift between code and design surfaces continuously.
+
 ## What this tool is not
 
 dspack-export generates **snapshots only**. It has no drift detection, no
