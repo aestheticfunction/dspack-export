@@ -1,0 +1,10 @@
+{
+  "name": "Shadcn Demo",
+  "version": "1.0.0",
+  "description": "Demo shadcn-style design system used as the dspack-export golden fixture.",
+  "source": "fixtures/shadcn-demo",
+  "components": ["components/ui/*.tsx"],
+  "css": ["styles/globals.css"],
+  "tsconfig": "tsconfig.json",
+  "output": "shadcn-demo.dspack.json"
+}

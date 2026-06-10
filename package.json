@@ -1,0 +1,44 @@
+{
+  "name": "@aestheticfunction/dspack-export",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Generate dspack v0.2 design-system snapshots from React + Storybook + Tailwind/shadcn codebases",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/cli.js",
+  "bin": {
+    "dspack-export": "dist/cli.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "author": {
+    "name": "Ryan Dombrowski"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "generate:fixture": "npm run build && node dist/cli.js generate --config fixtures/shadcn-demo/dspack-export.config.json"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.28.5",
+    "@babel/traverse": "^7.28.5",
+    "@babel/types": "^7.28.5",
+    "ajv": "^8.17.0",
+    "minimist": "^1.2.8",
+    "react-docgen-typescript": "^2.4.0",
+    "typescript": "^5.5.0"
+  },
+  "devDependencies": {
+    "@radix-ui/react-slot": "^1.1.0",
+    "@types/babel__traverse": "^7.28.0",
+    "@types/minimist": "^1.2.5",
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.20",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "react": "^18.3.1",
+    "tailwind-merge": "^2.6.0",
+    "vitest": "^3.0.0"
+  }
+}
