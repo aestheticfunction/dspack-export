@@ -1,6 +1,6 @@
 {
   "name": "@aestheticfunction/dspack-export",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "private": true,
   "description": "Generate dspack v0.2 design-system snapshots from React + Tailwind/shadcn codebases",
   "keywords": [

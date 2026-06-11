@@ -4,7 +4,7 @@ Generate [dspack](https://github.com/aestheticfunction/dspack) v0.2 design-syste
 snapshots from React + Tailwind/shadcn codebases, ready to serve to AI agents via
 [ds-mcp](https://github.com/aestheticfunction/ds-mcp).
 
-**Status: experimental** (`0.1.0-alpha.0`). Config format and output details
+**Status: experimental** (`0.1.0-alpha.1`). Config format and output details
 may still change between versions. Not yet published to npm — install from
 source (below). The [handbook](docs/handbook.md) covers the supported stack,
 known limitations, and troubleshooting.

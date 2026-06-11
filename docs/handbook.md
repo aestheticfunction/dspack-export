@@ -1,6 +1,6 @@
 # dspack-export — Handbook
 
-Status: **experimental** (`0.1.0-alpha.0`). Not on npm; install from this
+Status: **experimental** (`0.1.0-alpha.1`). Not on npm; install from this
 repository. Expect rough edges — please report everything that surprises you
 (see [CONTRIBUTING](../CONTRIBUTING.md) for the issue templates to use).
 
