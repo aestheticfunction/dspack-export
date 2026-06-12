@@ -56,8 +56,9 @@ your React/Tailwind codebase
 - **[ds-mcp](https://github.com/aestheticfunction/ds-mcp)** — serves a
   snapshot to MCP-compatible AI agents, read-only.
 - **[Aesthetic Function](https://github.com/aestheticfunction/aesthetic-function)**
-  — the commercial product for the *time* dimension: detecting and
-  reconciling drift between code and design surfaces continuously.
+  — the open-core reconciliation engine beneath a commercial product: it
+  reads a committed dspack file as a reference contract and continuously
+  checks Figma, code, and docs against it.
 
 ## What this tool is not
 
