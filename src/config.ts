@@ -16,6 +16,12 @@ export interface ExporterConfig {
   description?: string;
   /** URL or description of the source repository. */
   source?: string;
+  /**
+   * Component framework adapter. Optional; inferred from component file
+   * extensions when omitted (.tsx/.jsx/.ts/.js → react, .vue → vue). Set
+   * explicitly for mixed/monorepo/migration layouts.
+   */
+  framework?: 'react' | 'vue';
   /** Glob(s) for component source files, relative to project root. */
   components: string[];
   /** CSS entry file(s) containing token custom properties. Optional if `tokens` is set. */
@@ -25,8 +31,11 @@ export interface ExporterConfig {
    * Studio, or Style Dictionary). Optional if `css` is set.
    */
   tokens?: string[];
-  /** Path to the project's tsconfig.json. */
-  tsconfig: string;
+  /**
+   * Path to the project's tsconfig.json. Required by the React adapter
+   * (react-docgen-typescript); optional for Vue.
+   */
+  tsconfig?: string;
   /** Output file path. Default: <kebab-name>.dspack.json */
   output?: string;
 }
@@ -36,7 +45,8 @@ export interface ResolvedConfig extends ExporterConfig {
   componentFiles: string[];
   cssFiles: string[];
   tokensFiles: string[];
-  tsconfigPath: string;
+  /** Absolute tsconfig path, or undefined when not configured (Vue). */
+  tsconfigPath?: string;
   outputPath: string;
 }
 
@@ -63,7 +73,11 @@ export function loadConfig(configPath: string): ResolvedConfig {
   if (!parsed.css?.length && !parsed.tokens?.length) {
     throw new Error('Config must provide at least one token source: "css" and/or "tokens".');
   }
-  if (!parsed.tsconfig) throw new Error('Config is missing required field "tsconfig".');
+  if (parsed.framework && parsed.framework !== 'react' && parsed.framework !== 'vue') {
+    throw new Error(`Config field "framework" must be "react" or "vue", got "${parsed.framework}".`);
+  }
+  // tsconfig is required by React but optional for Vue; the resolved adapter
+  // enforces its own requirement (see ReactAdapter).
 
   const projectRoot = dirname(absConfigPath);
   const componentFiles = parsed.components
@@ -75,7 +89,7 @@ export function loadConfig(configPath: string): ResolvedConfig {
   }
   const cssFiles = (parsed.css ?? []).map((f) => resolveFrom(projectRoot, f));
   const tokensFiles = (parsed.tokens ?? []).map((f) => resolveFrom(projectRoot, f));
-  const tsconfigPath = resolveFrom(projectRoot, parsed.tsconfig);
+  const tsconfigPath = parsed.tsconfig ? resolveFrom(projectRoot, parsed.tsconfig) : undefined;
   const defaultOutput = `${parsed.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.dspack.json`;
   const outputPath = resolveFrom(projectRoot, parsed.output ?? defaultOutput);
 

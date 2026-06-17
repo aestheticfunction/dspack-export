@@ -1,8 +1,16 @@
 # dspack-export
 
 Generate [dspack](https://github.com/aestheticfunction/dspack) v0.2 design-system
-snapshots from React + Tailwind/shadcn codebases, ready to serve to AI agents via
+snapshots from component codebases — **React + Tailwind/shadcn** and **Vue 3 +
+Vuetify 3** — ready to serve to AI agents via
 [ds-mcp](https://github.com/aestheticfunction/ds-mcp).
+
+Component extraction runs through a framework-adapter layer (see
+[docs/adapters.md](docs/adapters.md)); the shared pipeline — token extraction,
+assembly, provenance, warnings, validation, deterministic output — is identical
+across frameworks. The active adapter is chosen by an optional `framework` config
+field, or inferred from component file extensions (`.tsx/.jsx` → React, `.vue` →
+Vue) with a hard error on ambiguous input.
 
 **Status: experimental** (`0.1.0-alpha.1`). Config format and output details
 may still change between versions. Not yet published to npm — install from
@@ -25,9 +33,17 @@ dspack-export validate my-system.dspack.json
 ```
 
 A snapshot answers "what does my design system look like right now": components,
-props (including cva variant enums **and their defaults**), semantic color/radius
-tokens from CSS custom properties (Tailwind v3 and v4 conventions), dark-theme
-overrides, layout breakpoints, and React import bindings.
+props (including cva variant enums **and their defaults**, or Vue
+`defineProps`/`withDefaults` types and defaults), semantic color/radius tokens
+from CSS custom properties (Tailwind v3 and v4 conventions), dark-theme
+overrides, layout breakpoints, and per-framework import bindings
+(`frameworkBindings.react` or `frameworkBindings.vue`).
+
+For Vue 3 SFCs the Vue adapter extracts props (`<script setup>` type-based and
+runtime `defineProps`/`withDefaults`, plus the Options API), emits (normalized to
+`on<Event>` handler props), slots (default → `children`, named → `slot:<name>`),
+and conservative Vuetify 3 usage detection. See
+[Vue 3 + Vuetify 3](docs/handbook.md#vue-3--vuetify-3).
 
 Tokens can also be imported from a **DTCG design-token JSON file** — the
 interchange format that Figma exports, Tokens Studio, and Style Dictionary can

@@ -1,0 +1,10 @@
+{
+  "name": "Vuetify Demo",
+  "version": "1.0.0",
+  "description": "Demo Vue 3 + Vuetify 3 design system used as the dspack-export Vue golden fixture.",
+  "source": "fixtures/vuetify-demo",
+  "framework": "vue",
+  "components": ["src/components/*.vue"],
+  "tokens": ["tokens/tokens.json"],
+  "output": "vuetify-demo.dspack.json"
+}

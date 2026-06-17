@@ -36,8 +36,12 @@ component grouping into `composition.subComponents`, and additional
 extraction conventions — see [docs/maintainership.md](docs/maintainership.md)
 for how these are triaged.
 
-New frameworks (Vue, Svelte, …) require a maintainer-accepted proposal
-before code: one excellent stack is worth more than three mediocre ones.
+Component frameworks are now pluggable through a framework-adapter layer
+(`src/adapters/`, see [docs/adapters.md](docs/adapters.md)). **React +
+Tailwind/shadcn** and **Vue 3 + Vuetify 3** ship today. New adapters (Svelte
+next) still require a maintainer-accepted proposal before code — one excellent
+stack is worth more than three mediocre ones — but they slot into the existing
+contract without pipeline, schema, or assembly changes.
 
 ---
 

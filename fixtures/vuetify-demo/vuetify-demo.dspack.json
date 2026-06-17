@@ -1,0 +1,236 @@
+{
+  "dspack": "0.2",
+  "name": "Vuetify Demo",
+  "description": "Demo Vue 3 + Vuetify 3 design system used as the dspack-export Vue golden fixture.",
+  "version": "1.0.0",
+  "metadata": {
+    "generatedBy": "@aestheticfunction/dspack-export@0.1.0-alpha.1",
+    "generatedAt": "2026-06-10T00:00:00.000Z",
+    "source": "fixtures/vuetify-demo",
+    "note": "Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated and will be overwritten on regeneration."
+  },
+  "tokens": {
+    "color": {
+      "description": "Imported from a design token file (color).",
+      "tier": "semantic",
+      "values": {
+        "primary": {
+          "value": "#1867c0",
+          "type": "color",
+          "description": "Primary brand color."
+        },
+        "secondary": {
+          "value": "#5cbbf6",
+          "type": "color"
+        },
+        "surface": {
+          "value": "#ffffff",
+          "type": "color"
+        },
+        "error": {
+          "value": "#b00020",
+          "type": "color"
+        }
+      }
+    },
+    "radius": {
+      "description": "Imported from a design token file (radius).",
+      "tier": "semantic",
+      "values": {
+        "sm": {
+          "value": "4px",
+          "type": "dimension"
+        },
+        "lg": {
+          "value": "8px",
+          "type": "dimension"
+        }
+      }
+    }
+  },
+  "components": {
+    "app-button": {
+      "name": "AppButton",
+      "description": "Primary action button. Thin wrapper over Vuetify's v-btn that exposes a\ncurated, design-system-approved prop and event surface.",
+      "props": {
+        "variant": {
+          "type": "enum",
+          "description": "Visual style of the button.",
+          "values": [
+            "primary",
+            "secondary",
+            "tonal"
+          ],
+          "default": "primary",
+          "propRole": "choice"
+        },
+        "color": {
+          "type": "string",
+          "description": "Theme color token name.",
+          "default": "primary"
+        },
+        "disabled": {
+          "type": "boolean",
+          "description": "Disable interaction.",
+          "default": false,
+          "propRole": "flag"
+        },
+        "onClick": {
+          "type": "function",
+          "propRole": "handler"
+        },
+        "children": {
+          "type": "node",
+          "propRole": "slot"
+        }
+      },
+      "tags": [
+        "vuetify:v-btn"
+      ]
+    },
+    "array-props": {
+      "name": "ArrayProps",
+      "description": "Intentionally under-typed component: props declared as a string array carry\nno type information, so extraction keeps them as \"unknown\" and warns.",
+      "props": {
+        "alpha": {
+          "type": "unknown"
+        },
+        "beta": {
+          "type": "unknown"
+        }
+      }
+    },
+    "data-card": {
+      "name": "DataCard",
+      "description": "Card that renders a Vuetify data table with header and footer slots.",
+      "props": {
+        "title": {
+          "type": "string",
+          "required": true
+        },
+        "rows": {
+          "type": "array"
+        },
+        "dense": {
+          "type": "boolean",
+          "default": false,
+          "propRole": "flag"
+        },
+        "slot:footer": {
+          "type": "node",
+          "propRole": "slot"
+        },
+        "slot:header": {
+          "type": "node",
+          "propRole": "slot"
+        }
+      },
+      "tags": [
+        "vuetify:v-card",
+        "vuetify:v-data-table"
+      ]
+    },
+    "form-field": {
+      "name": "FormField",
+      "description": "Form field that renders either a text field or a select. Demonstrates an\ninline type-literal defineProps (no withDefaults), an enum-like prop, and\nupdate:modelValue event normalization.",
+      "props": {
+        "modelValue": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "enum",
+          "description": "Which input control to render.",
+          "values": [
+            "text",
+            "select"
+          ],
+          "required": true,
+          "propRole": "choice"
+        },
+        "required": {
+          "type": "boolean",
+          "propRole": "flag"
+        },
+        "onUpdateModelValue": {
+          "type": "function",
+          "propRole": "handler"
+        }
+      },
+      "tags": [
+        "vuetify:v-select",
+        "vuetify:v-text-field"
+      ]
+    },
+    "status-badge": {
+      "name": "StatusBadge",
+      "description": "StatusBadge component.",
+      "props": {
+        "label": {
+          "type": "string",
+          "required": true
+        },
+        "count": {
+          "type": "number",
+          "default": 0
+        },
+        "variant": {
+          "type": "string",
+          "default": "info",
+          "propRole": "choice"
+        },
+        "onDismiss": {
+          "type": "function",
+          "propRole": "handler"
+        },
+        "onUpdateModelValue": {
+          "type": "function",
+          "propRole": "handler"
+        }
+      },
+      "tags": [
+        "vuetify:v-chip"
+      ]
+    }
+  },
+  "frameworkBindings": {
+    "vue": {
+      "name": "Vue 3",
+      "components": {
+        "app-button": {
+          "importPath": "./src/components/AppButton.vue",
+          "exportName": "AppButton",
+          "emits": [
+            "click"
+          ],
+          "guidance": "Composes Vuetify components: v-btn."
+        },
+        "array-props": {
+          "importPath": "./src/components/ArrayProps.vue",
+          "exportName": "ArrayProps"
+        },
+        "data-card": {
+          "importPath": "./src/components/DataCard.vue",
+          "exportName": "DataCard",
+          "guidance": "Composes Vuetify components: v-card, v-data-table."
+        },
+        "form-field": {
+          "importPath": "./src/components/FormField.vue",
+          "exportName": "FormField",
+          "emits": [
+            "update:modelValue"
+          ],
+          "guidance": "Composes Vuetify components: v-select, v-text-field."
+        },
+        "status-badge": {
+          "importPath": "./src/components/StatusBadge.vue",
+          "exportName": "StatusBadge",
+          "emits": [
+            "dismiss",
+            "update:modelValue"
+          ],
+          "guidance": "Composes Vuetify components: v-chip."
+        }
+      }
+    }
+  }
+}
