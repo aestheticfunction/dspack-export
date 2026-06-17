@@ -76,5 +76,7 @@ export function generateDocument(config: ResolvedConfig, options: GenerateOption
     generatedAt: options.generatedAt,
   });
 
-  return { document, warnings: [...adapterWarnings, ...warnings] };
+  // Provenance-tag registry warnings to match fragment/assembler warnings (`[provenance] ...`).
+  const taggedAdapterWarnings = adapterWarnings.map((w) => `[adapter-registry] ${w}`);
+  return { document, warnings: [...taggedAdapterWarnings, ...warnings] };
 }

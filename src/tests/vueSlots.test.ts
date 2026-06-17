@@ -25,6 +25,18 @@ describe('slot extraction', () => {
     ).toEqual(['default', 'header', 'footer']);
   });
 
+  it('treats a non-name binding on <slot> as a default slot', () => {
+    expect(templateSlots(`<template><slot :foo="bar" /></template>`)).toEqual(['default']);
+  });
+
+  it('skips a dynamic :name slot and warns', () => {
+    const { descriptor } = parseVueSfc(`<template><slot :name="dynamic" /></template>`, 'X.vue');
+    const warnings: string[] = [];
+    const names = slotNamesFromTemplate(descriptor.template?.ast as TemplateNode | undefined, warnings);
+    expect(names).toEqual([]);
+    expect(warnings.join(' ')).toMatch(/dynamic :name/);
+  });
+
   it('normalizes default → children and named → sorted slot:<name>', () => {
     const { props } = buildSlotProps(['default', 'header', 'footer']);
     expect(Object.keys(props)).toEqual(['children', 'slot:footer', 'slot:header']);

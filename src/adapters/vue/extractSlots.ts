@@ -46,16 +46,18 @@ export function slotNamesFromDefineSlots(setupAst: File): string[] {
 }
 
 // Minimal structural typing over the compiler-dom template AST (kept loose so a
-// Vue minor bump only affects this isolated walk).
+// Vue minor bump only affects this isolated walk). `arg` carries a directive's
+// argument, e.g. the `name` in `:name` / `v-bind:name`.
 interface TemplateNode {
   type: number;
   tag?: string;
-  props?: Array<{ type: number; name?: string; value?: { content?: string } }>;
+  props?: Array<{ type: number; name?: string; value?: { content?: string }; arg?: { content?: string } }>;
   children?: TemplateNode[];
 }
 
 const NODE_ELEMENT = 1;
 const ATTR_STATIC = 6;
+const DIRECTIVE = 7;
 
 /** Walk a template AST root and collect `<slot>` names ("default" for unnamed). */
 export function slotNamesFromTemplate(root: TemplateNode | undefined, warnings: string[]): string[] {
@@ -67,11 +69,14 @@ export function slotNamesFromTemplate(root: TemplateNode | undefined, warnings: 
       const nameAttr = (node.props ?? []).find((p) => p.type === ATTR_STATIC && p.name === 'name');
       if (nameAttr) {
         const content = nameAttr.value?.content;
-        if (content) names.push(content);
+        names.push(content || 'default');
       } else {
-        // Either an unnamed (default) slot, or a dynamically-named one (:name).
-        const dynamicName = (node.props ?? []).some((p) => p.type !== ATTR_STATIC && p.name === 'bind');
-        if (dynamicName) warnings.push('a <slot> uses a dynamic name and was skipped');
+        // Only a `:name` / `v-bind:name` binding is a dynamic slot name. Other
+        // bindings (e.g. `<slot :foo="bar" />`) leave it a default slot.
+        const dynamicName = (node.props ?? []).some(
+          (p) => p.type === DIRECTIVE && p.name === 'bind' && p.arg?.content === 'name',
+        );
+        if (dynamicName) warnings.push('a <slot> uses a dynamic :name and was skipped');
         else names.push('default');
       }
     }
