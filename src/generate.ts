@@ -1,15 +1,20 @@
 /**
  * Generation pipeline shared by the CLI and the test suite.
+ *
+ * Component extraction is delegated to a single resolved FrameworkAdapter;
+ * token/layout extraction is framework-independent and runs for every adapter.
  */
-import { extractWithDocgen } from './sources/docgen.js';
-import { extractWithAst } from './sources/ast/discovery.js';
-import { extractCvaVariants } from './sources/ast/cvaVariants.js';
+import { resolveAdapter } from './adapters/registry.js';
 import { extractCssVariables } from './sources/tokens/cssVariables.js';
 import { extractDesignTokens } from './sources/tokens/designTokens.js';
 import { extractLayout } from './sources/tokens/layout.js';
 import { assemble } from './emit/assemble.js';
 import type { ResolvedConfig } from './config.js';
 import type { DspackDocument } from './types.js';
+
+// Re-exported for the existing unit test (src/tests/orphanCva.test.ts), which
+// imports it from here. The implementation now lives in the React adapter.
+export { dropOrphanCvaComponents } from './adapters/react/index.js';
 
 // Keep in sync with package.json version (embedded in metadata.generatedBy).
 export const GENERATOR_VERSION = '0.1.0-alpha.1';
@@ -38,47 +43,19 @@ export function generatedAtFromEnv(env: NodeJS.ProcessEnv = process.env): string
   return new Date(seconds * 1000).toISOString();
 }
 
-/**
- * A cva fragment id that matches no extracted component means the
- * `<name>Variants` naming convention didn't hold. Emitting it would create a
- * phantom component with a stub description, so drop it and warn.
- */
-export function dropOrphanCvaComponents(
-  cvaFragment: import('./fragment.js').SourceFragment,
-  knownIds: Set<string>,
-): void {
-  for (const id of Object.keys(cvaFragment.components ?? {})) {
-    if (!knownIds.has(id)) {
-      delete cvaFragment.components![id];
-      cvaFragment.warnings = cvaFragment.warnings ?? [];
-      cvaFragment.warnings.push(
-        `cva variants for "${id}" matched no extracted component (naming convention mismatch?); variant defaults for it were dropped`,
-      );
-    }
-  }
-}
-
 export function generateDocument(config: ResolvedConfig, options: GenerateOptions = {}): GenerateResult {
-  const docgenFragment = extractWithDocgen({
+  // Resolve exactly one component-framework adapter (explicit or inferred).
+  // Throws (fail-fast, before any output is written) on ambiguous input.
+  const { adapter, warnings: adapterWarnings } = resolveAdapter(config);
+
+  const fragments = adapter.extractComponents({
+    files: config.componentFiles,
+    projectRoot: config.projectRoot,
     tsconfigPath: config.tsconfigPath,
-    files: config.componentFiles,
-    projectRoot: config.projectRoot,
   });
-  const cvaFragment = extractCvaVariants({ files: config.componentFiles });
-  const astFragment = extractWithAst({
-    files: config.componentFiles,
-    projectRoot: config.projectRoot,
-  });
-
-  const knownIds = new Set([
-    ...Object.keys(docgenFragment.components ?? {}),
-    ...Object.keys(astFragment.components ?? {}),
-  ]);
-  dropOrphanCvaComponents(cvaFragment, knownIds);
-
-  const fragments = [docgenFragment, cvaFragment, astFragment];
 
   // CSS custom-property tokens + layout (only when CSS files are configured).
+  // Framework-independent: runs for every adapter.
   if (config.cssFiles.length > 0) {
     fragments.push(extractCssVariables({ files: config.cssFiles }));
     fragments.push(extractLayout({ cssFiles: config.cssFiles }));
@@ -90,7 +67,7 @@ export function generateDocument(config: ResolvedConfig, options: GenerateOption
     fragments.push(extractDesignTokens({ files: config.tokensFiles }));
   }
 
-  return assemble(fragments, {
+  const { document, warnings } = assemble(fragments, {
     name: config.name,
     version: config.version,
     description: config.description,
@@ -98,4 +75,8 @@ export function generateDocument(config: ResolvedConfig, options: GenerateOption
     generatorVersion: GENERATOR_VERSION,
     generatedAt: options.generatedAt,
   });
+
+  // Provenance-tag registry warnings to match fragment/assembler warnings (`[provenance] ...`).
+  const taggedAdapterWarnings = adapterWarnings.map((w) => `[adapter-registry] ${w}`);
+  return { document, warnings: [...taggedAdapterWarnings, ...warnings] };
 }

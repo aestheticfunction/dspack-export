@@ -71,8 +71,62 @@ Deterministic output (reviewable diffs, golden files): set
 | Relative CSS `@import` | ✅ | one level deep |
 | Breakpoints / spacing scale | ✅ | Tailwind defaults, extended by `@theme --breakpoint-*` / `--spacing` |
 | Design token files (DTCG JSON) | ✅ | local file import; resolved values only; `color`, `dimension`, `fontFamily`, `fontWeight` — see [Importing design token files](#importing-design-token-files-dtcg) |
+| Vue 3 SFCs (`<script setup>`, `<script>`/`defineComponent`) | ✅ | props, emits, slots, Vuetify 3 usage — see [Vue 3 + Vuetify 3](#vue-3--vuetify-3) |
 | Storybook | ❌ not yet | planned enrichment (stories, snippets); not required |
-| Vue / Svelte / CSS Modules / JS `tailwind.config` screens / direct Figma/Tokens Studio/Style Dictionary integration | ❌ | out of scope |
+| Svelte / CSS Modules / JS `tailwind.config` screens / direct Figma/Tokens Studio/Style Dictionary integration | ❌ | out of scope (Svelte is the next planned adapter) |
+
+## Vue 3 + Vuetify 3
+
+Point the config at `.vue` files. The Vue adapter is selected automatically when
+all component files are `.vue`, or set it explicitly with `"framework": "vue"`
+(required for mixed/monorepo layouts — ambiguous input is a hard error). Vue does
+not need `tsconfig`.
+
+```json
+{
+  "name": "acme-ui",
+  "framework": "vue",
+  "components": ["src/components/*.vue"],
+  "tokens": ["tokens/tokens.json"]
+}
+```
+
+| Surface | Supported | Notes |
+|---|---|---|
+| `<script setup>` type-based `defineProps<T>()` + `withDefaults` | ✅ | in-file/same-file interface or type alias; literal defaults only |
+| `<script setup>` runtime `defineProps({ ... })` / `defineProps([...])` | ✅ | `type`/`required`/literal `default`; array form has no types (warns) |
+| Options API `props` / `emits` (`defineComponent` or `export default {}`) | ✅ | `name` option, when present, sets the component name |
+| Emits (`defineEmits` type/array forms, Options `emits`) | ✅ | normalized to `on<PascalEvent>` handler props; raw names kept in `frameworkBindings.vue` |
+| Slots (`defineSlots`, template `<slot>`) | ✅ | default → `children`; named → `slot:<name>` (namespaced to avoid prop collisions) |
+| Vuetify 3 component usage (`v-btn`, `v-card`, `v-data-table`, …) | ✅ | conservative allowlist; surfaced as component `tags` + binding `guidance` |
+| Computed/factory defaults, spread props, dynamic emit/slot lists | ❌ omit + warn | never guessed |
+| Cross-file prop types imported from other modules | ❌ omit + warn | only same-file types are resolved |
+
+Representative wrapper (the common design-system pattern of curating a Vuetify
+primitive's surface):
+
+```vue
+<script setup lang="ts">
+interface Props {
+  /** Visual style. */
+  variant?: 'primary' | 'secondary'
+  disabled?: boolean
+}
+withDefaults(defineProps<Props>(), { variant: 'primary', disabled: false })
+defineEmits<{ (e: 'click', payload: MouseEvent): void }>()
+</script>
+<template>
+  <v-btn :variant="variant" :disabled="disabled" @click="$emit('click', $event)">
+    <slot />
+  </v-btn>
+</template>
+```
+
+→ props `variant` (enum, default `primary`), `disabled` (flag), `onClick`
+(handler), `children` (slot); `tags: ["vuetify:v-btn"]`; binding records the raw
+`click` emit and Vuetify guidance.
+
+Regenerate the Vue golden fixture with `npm run generate:fixture:vue`.
 
 ## Importing design token files (DTCG)
 

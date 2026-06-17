@@ -3,7 +3,7 @@
  * detecting common shadcn project conventions. Non-interactive; the output
  * is meant to be hand-edited.
  */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ExporterConfig } from './config.js';
 
@@ -12,7 +12,23 @@ const COMPONENT_DIR_CANDIDATES = [
   'src/components/ui',
   'app/components/ui',
   'src/components',
+  'components',
 ];
+
+/** Detect the dominant component framework in a directory by file extension. */
+function detectFramework(dir: string): 'react' | 'vue' | undefined {
+  let files: string[];
+  try {
+    files = readdirSync(dir);
+  } catch {
+    return undefined;
+  }
+  const hasVue = files.some((f) => f.endsWith('.vue'));
+  const hasReact = files.some((f) => f.endsWith('.tsx') || f.endsWith('.jsx'));
+  if (hasVue && !hasReact) return 'vue';
+  if (hasReact && !hasVue) return 'react';
+  return undefined;
+}
 
 const CSS_CANDIDATES = [
   'app/globals.css',
@@ -65,6 +81,10 @@ export function initConfig(projectRoot: string, force = false): InitResult {
     );
   }
 
+  const framework = componentDir ? detectFramework(join(projectRoot, componentDir)) : undefined;
+  const isVue = framework === 'vue';
+  const ext = isVue ? 'vue' : 'tsx';
+
   const css = CSS_CANDIDATES.find((file) => existsSync(join(projectRoot, file)));
   if (!css) {
     notes.push(
@@ -72,8 +92,9 @@ export function initConfig(projectRoot: string, force = false): InitResult {
     );
   }
 
-  if (!existsSync(join(projectRoot, 'tsconfig.json'))) {
-    notes.push('No tsconfig.json found; prop extraction requires one — edit "tsconfig" before generating.');
+  // tsconfig is required by the React adapter only.
+  if (!isVue && !existsSync(join(projectRoot, 'tsconfig.json'))) {
+    notes.push('No tsconfig.json found; React prop extraction requires one — edit "tsconfig" before generating.');
   }
 
   // DTCG design-token file is optional; only added to the config when detected.
@@ -82,10 +103,11 @@ export function initConfig(projectRoot: string, force = false): InitResult {
   const config: ExporterConfig = {
     name,
     ...(version ? { version } : {}),
-    components: [`${componentDir ?? 'components/ui'}/*.tsx`],
+    ...(framework ? { framework } : {}),
+    components: [`${componentDir ?? 'components/ui'}/*.${ext}`],
     css: [css ?? 'app/globals.css'],
     ...(tokenFile ? { tokens: [tokenFile] } : {}),
-    tsconfig: 'tsconfig.json',
+    ...(isVue ? {} : { tsconfig: 'tsconfig.json' }),
   };
 
   writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
