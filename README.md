@@ -58,7 +58,7 @@ satnaing/shadcn-admin with one.
 ## How it fits the ecosystem
 
 ```
-your React/Tailwind codebase
+your component codebase
         │
         ▼
   dspack-export  ──────►  your-system.dspack.json  ──────►  ds-mcp  ──────►  AI agents
