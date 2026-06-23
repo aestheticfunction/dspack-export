@@ -1,13 +1,6 @@
 # dspack-export v0.2.0-alpha.0
 
-Released: _unreleased_
-
-> Versioning note: the generator version stamp (`package.json` and
-> `GENERATOR_VERSION`) is intentionally still `0.1.0-alpha.1` on this branch so
-> the existing React golden stays byte-identical. Bump both to `0.2.0-alpha.0`
-> as the release commit, then regenerate every golden fixture
-> (`npm run generate:fixture && npm run generate:fixture:vue` and the DTCG
-> fixture) so `metadata.generatedBy` updates in lockstep.
+Released: 2026-06-22
 
 ## What's new
 
@@ -70,6 +63,9 @@ with a provenance-tagged warning**, never guessed.
 
 ## Stats
 
-- Tests: 90 passing (was 51) + 1 skipped (ds-mcp round-trip).
-- React golden: byte-identical. New Vue golden fixture: `fixtures/vuetify-demo`.
-- New goldens regenerate with `npm run generate:fixture:vue`.
+- Tests: 92 passing (was 51) + 1 skipped (ds-mcp round-trip).
+- React extraction unchanged: the only golden diff is the `metadata.generatedBy`
+  version stamp (regenerated for the `0.2.0-alpha.0` bump). New Vue golden
+  fixture: `fixtures/vuetify-demo`.
+- Goldens regenerate with `npm run generate:fixture` / `npm run generate:fixture:vue`
+  (and the shadcn-v4 / DTCG configs via the CLI with `SOURCE_DATE_EPOCH=1781049600`).
