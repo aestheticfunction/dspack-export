@@ -17,7 +17,7 @@ import type { DspackDocument } from './types.js';
 export { dropOrphanCvaComponents } from './adapters/react/index.js';
 
 // Keep in sync with package.json version (embedded in metadata.generatedBy).
-export const GENERATOR_VERSION = '0.1.0-alpha.1';
+export const GENERATOR_VERSION = '0.2.0-alpha.0';
 
 export interface GenerateOptions {
   /** ISO 8601 timestamp override for deterministic output. */

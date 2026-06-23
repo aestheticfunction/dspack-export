@@ -12,7 +12,7 @@ across frameworks. The active adapter is chosen by an optional `framework` confi
 field, or inferred from component file extensions (`.tsx/.jsx` → React, `.vue` →
 Vue) with a hard error on ambiguous input.
 
-**Status: experimental** (`0.1.0-alpha.1`). Config format and output details
+**Status: experimental** (`0.2.0-alpha.0`). Config format and output details
 may still change between versions. Not yet published to npm — install from
 source (below). The [handbook](docs/handbook.md) covers the supported stack,
 known limitations, and troubleshooting.
