@@ -17,6 +17,11 @@ may still change between versions. Not yet published to npm — install from
 source (below). The [handbook](docs/handbook.md) covers the supported stack,
 known limitations, and troubleshooting.
 
+The snapshot targets the dspack v0.2 shape. The spec has since added the
+governance revisions (v0.3 and v0.4); their rules, intents, and examples are
+hand-authored downstream, not extracted, and this tool remains a snapshot
+generator.
+
 ## Install (from source)
 
 ```bash
