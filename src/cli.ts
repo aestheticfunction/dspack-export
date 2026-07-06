@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * dspack-export — generate dspack v0.2 snapshots from React + Tailwind/shadcn codebases.
+ * dspack-export — generate dspack v0.2 snapshots from component codebases
+ * (React + Tailwind/shadcn, Vue 3 + Vuetify 3).
  *
  * Commands:
  *   dspack-export generate --config <path>   Generate a .dspack.json snapshot
