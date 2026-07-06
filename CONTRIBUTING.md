@@ -1,7 +1,8 @@
 # Contributing to dspack-export
 
 dspack-export generates [dspack](https://github.com/aestheticfunction/dspack)
-v0.2 snapshots from React + Tailwind/shadcn codebases. Contributions — bug
+v0.2 snapshots from component codebases — React + Tailwind/shadcn and
+Vue 3 + Vuetify 3. Contributions — bug
 reports, extraction-gap reports, documentation, and code — are welcome.
 
 This repository is at an early public stage. The pipeline is implemented and
