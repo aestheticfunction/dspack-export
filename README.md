@@ -8,6 +8,8 @@ Vuetify 3** — ready to serve to AI agents via
 > Part of the [dspack ecosystem](https://github.com/aestheticfunction) — the organization profile has the full map of how the repositories fit together.
 >
 > **Kind:** snapshot tool (CLI, experimental, not yet on npm — install from source) · **Audience:** teams with an existing component codebase who want a starting dspack file · **Neighbors:** produces [dspack](https://github.com/aestheticfunction/dspack) documents; serves them via [ds-mcp](https://github.com/aestheticfunction/ds-mcp); see the governed end-to-end chain in [dspack-studio](https://github.com/aestheticfunction/dspack-studio) ([hosted replay](https://studio.aesthetic-function.com))
+>
+> This tool is **step 1** of the adoption journey; what to do with the snapshot it produces — review, governance authoring, validation, serving — is the [adoption guide](https://github.com/aestheticfunction/dspack/blob/main/ADOPTING.md).
 
 Component extraction runs through a framework-adapter layer (see
 [docs/adapters.md](docs/adapters.md)); the shared pipeline — token extraction,
