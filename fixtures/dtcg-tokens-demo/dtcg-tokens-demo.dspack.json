@@ -1,13 +1,35 @@
 {
-  "dspack": "0.2",
+  "dspack": "0.4",
   "name": "DTCG Tokens Demo",
   "description": "Fixture exercising DTCG design-token-file import alongside CSS token extraction.",
   "version": "1.0.0",
   "metadata": {
-    "generatedBy": "@aestheticfunction/dspack-export@0.2.0-alpha.0",
+    "generatedBy": "@aestheticfunction/dspack-export@0.3.0",
     "generatedAt": "2026-06-10T00:00:00.000Z",
     "source": "fixtures/dtcg-tokens-demo",
-    "note": "Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated and will be overwritten on regeneration."
+    "note": "Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated; regeneration refuses to overwrite a document containing human-authored content (see metadata[\"x-bootstrap\"]).",
+    "x-bootstrap": {
+      "spec": "0.4",
+      "generated": {
+        "tokens": "6ff5c3fd63f4ba56337320d79583982bfce66919a3552f4938e95cbd1005326c",
+        "components": "0c49b4db41e59c849995be828fa8df10a4e10aa39384213f6ddb3801da0e9444",
+        "frameworkBindings": "9ee9adecbbe7a9a144145507791bebde19e6f4ebda6a47a29beec1497a9faf12",
+        "themes": "8fec47475f975ca9da6b547d5bd2d8ab5ac0f1c126ce98bb0614c01f39a66dad",
+        "layout": "84240158ff29a8c25fd428fdf24f3409df36710fabef89086d711704bc0130c2"
+      },
+      "awaitingAuthorship": [
+        "categories",
+        "intents",
+        "rules",
+        "examples",
+        "patterns",
+        "antiPatterns",
+        "components.*.whenToUse",
+        "components.*.accessibility",
+        "components.*.composition",
+        "components.*.constraints"
+      ]
+    }
   },
   "tokens": {
     "color": {

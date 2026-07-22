@@ -1,11 +1,13 @@
 /**
- * Merge SourceFragments into a dspack v0.2 document.
+ * Merge SourceFragments into a dspack document at the current emitted spec
+ * version (SPEC_VERSION in bootstrap.ts).
  *
  * Merge rules: fragments are processed lowest precedence first, so higher
  * precedence overwrites per key. Component entries merge per field (a
  * higher-precedence fragment's props replace, lower fills gaps). Token
  * categories merge per token name. Themes merge per override key.
  */
+import { SPEC_VERSION, buildLedger } from './bootstrap.js';
 import type { SourceFragment } from '../fragment.js';
 import type {
   DspackDocument,
@@ -127,7 +129,7 @@ export function assemble(fragments: SourceFragment[], options: AssembleOptions):
   }
 
   const document: DspackDocument = {
-    dspack: '0.2',
+    dspack: SPEC_VERSION,
     name: options.name,
     ...(options.description ? { description: options.description } : {}),
     ...(options.version ? { version: options.version } : {}),
@@ -135,7 +137,7 @@ export function assemble(fragments: SourceFragment[], options: AssembleOptions):
       generatedBy: `@aestheticfunction/dspack-export@${options.generatorVersion}`,
       generatedAt: options.generatedAt ?? new Date().toISOString(),
       ...(options.source ? { source: options.source } : {}),
-      note: 'Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated and will be overwritten on regeneration.',
+      note: 'Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated; regeneration refuses to overwrite a document containing human-authored content (see metadata["x-bootstrap"]).',
     },
     ...(Object.keys(tokens).length > 0 ? { tokens } : {}),
     ...(Object.keys(components).length > 0 ? { components } : {}),
@@ -143,6 +145,7 @@ export function assemble(fragments: SourceFragment[], options: AssembleOptions):
     ...(Object.keys(themes).length > 0 ? { themes } : {}),
     ...(layout ? { layout } : {}),
   };
+  (document.metadata as Record<string, unknown>)['x-bootstrap'] = buildLedger(document);
 
   return { document, warnings };
 }

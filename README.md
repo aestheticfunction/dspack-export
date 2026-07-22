@@ -1,13 +1,13 @@
 # dspack-export
 
-Generate [dspack](https://github.com/aestheticfunction/dspack) v0.2 design-system
-snapshots from component codebases — **React + Tailwind/shadcn** and **Vue 3 +
+Bootstrap current-spec [dspack](https://github.com/aestheticfunction/dspack)
+design-system snapshots from component codebases — **React + Tailwind/shadcn** and **Vue 3 +
 Vuetify 3** — ready to serve to AI agents via
 [ds-mcp](https://github.com/aestheticfunction/ds-mcp).
 
 > Part of the [dspack ecosystem](https://github.com/aestheticfunction) — the organization profile has the full map of how the repositories fit together.
 >
-> **Kind:** snapshot tool (CLI, experimental, not yet on npm — install from source) · **Audience:** teams with an existing component codebase who want a starting dspack file · **Neighbors:** produces [dspack](https://github.com/aestheticfunction/dspack) documents; serves them via [ds-mcp](https://github.com/aestheticfunction/ds-mcp); see the governed end-to-end chain in [dspack-studio](https://github.com/aestheticfunction/dspack-studio) ([hosted replay](https://studio.aesthetic-function.com))
+> **Kind:** snapshot tool (CLI, experimental, npm `@aestheticfunction/dspack-export`) · **Audience:** teams with an existing component codebase who want a starting dspack file · **Neighbors:** produces [dspack](https://github.com/aestheticfunction/dspack) documents; serves them via [ds-mcp](https://github.com/aestheticfunction/ds-mcp); see the governed end-to-end chain in [dspack-studio](https://github.com/aestheticfunction/dspack-studio) ([hosted replay](https://studio.aesthetic-function.com))
 >
 > This tool is **step 1** of the adoption journey; what to do with the snapshot it produces — review, governance authoring, validation, serving — is the [adoption guide](https://github.com/aestheticfunction/dspack/blob/main/ADOPTING.md).
 
@@ -18,17 +18,33 @@ across frameworks. The active adapter is chosen by an optional `framework` confi
 field, or inferred from component file extensions (`.tsx/.jsx` → React, `.vue` →
 Vue) with a hard error on ambiguous input.
 
-**Status: experimental** (`0.2.0-alpha.0`). Config format and output details
-may still change between versions. Not yet published to npm — install from
-source (below). The [handbook](docs/handbook.md) covers the supported stack,
-known limitations, and troubleshooting.
+**Status: experimental** (`0.3.0`). Config format and output details may
+still change between versions. Published to npm as
+`@aestheticfunction/dspack-export`. The [handbook](docs/handbook.md) covers
+the supported stack, known limitations, and troubleshooting.
 
-The snapshot targets the dspack v0.2 shape. The spec has since added the
-governance revisions (v0.3 and v0.4); their rules, intents, and examples are
-hand-authored downstream, not extracted, and this tool remains a snapshot
-generator.
+The snapshot declares the current spec version (v0.4) and populates the
+machine-discoverable sections only. The governance layer (categories,
+intents, rules, examples, patterns, anti-patterns, and prose guidance) is
+hand-authored downstream, never extracted — the output's
+`metadata["x-bootstrap"]` ledger records exactly which sections this tool
+generated (with content hashes) and which surfaces await authorship. The
+ledger is non-semantic: it exists only so regeneration can make safe
+decisions, and deleting it marks the document fully human-owned.
 
-## Install (from source)
+**Regeneration never destroys human-authored content.** If the output file
+contains anything this tool does not own — governance blocks, edited
+sections, or no ledger at all — `generate` refuses, explains why, and
+points at `--out` for writing a fresh snapshot elsewhere. There is no
+force flag.
+
+## Install
+
+```bash
+npm install -g @aestheticfunction/dspack-export
+```
+
+Or from source:
 
 ```bash
 git clone https://github.com/aestheticfunction/dspack-export
