@@ -1,13 +1,35 @@
 {
-  "dspack": "0.2",
+  "dspack": "0.4",
   "name": "Shadcn V4 Demo",
   "description": "Tailwind v4 / @theme-style fixture for dspack-export.",
   "version": "1.0.0",
   "metadata": {
-    "generatedBy": "@aestheticfunction/dspack-export@0.2.0-alpha.0",
+    "generatedBy": "@aestheticfunction/dspack-export@0.3.0",
     "generatedAt": "2026-06-10T00:00:00.000Z",
     "source": "fixtures/shadcn-v4-demo",
-    "note": "Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated and will be overwritten on regeneration."
+    "note": "Generated snapshot. Hand-authored sections (patterns, antiPatterns, whenToUse, accessibility, composition, constraints) are not generated; regeneration refuses to overwrite a document containing human-authored content (see metadata[\"x-bootstrap\"]).",
+    "x-bootstrap": {
+      "spec": "0.4",
+      "generated": {
+        "tokens": "a6f0f842d11f89823929bb7e3df4d40c19357c119dd42a687e0adbd1fa8e58d0",
+        "components": "84e0bc713f0fd87239cc60a9981d59d49e5c6689874f025a7773b24502ac1976",
+        "frameworkBindings": "9ee9adecbbe7a9a144145507791bebde19e6f4ebda6a47a29beec1497a9faf12",
+        "themes": "fafbb44d5be2b3a7954c6cb4fb1590a669e8aa1c84eecb3ad15b421e14a0042b",
+        "layout": "0b92b1df3e314dcb730718fd0c087a680750c7a3a33f16f2f1c0a6d885c4c585"
+      },
+      "awaitingAuthorship": [
+        "categories",
+        "intents",
+        "rules",
+        "examples",
+        "patterns",
+        "antiPatterns",
+        "components.*.whenToUse",
+        "components.*.accessibility",
+        "components.*.composition",
+        "components.*.constraints"
+      ]
+    }
   },
   "tokens": {
     "color": {

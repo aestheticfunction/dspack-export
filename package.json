@@ -1,8 +1,7 @@
 {
   "name": "@aestheticfunction/dspack-export",
-  "version": "0.2.0-alpha.0",
-  "private": true,
-  "description": "Generate dspack v0.2 design-system snapshots from component codebases (React + Tailwind/shadcn, Vue 3 + Vuetify 3) through a framework-adapter layer",
+  "version": "0.3.0",
+  "description": "Bootstrap a current-spec dspack design-system snapshot from a component codebase (React + Tailwind/shadcn, Vue 3 + Vuetify 3) through a framework-adapter layer",
   "keywords": [
     "dspack",
     "design-system",
@@ -20,7 +19,7 @@
     "dspack-export": "dist/cli.js"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "author": {
     "name": "Ryan Dombrowski"
@@ -37,7 +36,8 @@
     "build": "tsc",
     "test": "vitest run",
     "generate:fixture": "npm run build && SOURCE_DATE_EPOCH=1781049600 node dist/cli.js generate --config fixtures/shadcn-demo/dspack-export.config.json",
-    "generate:fixture:vue": "npm run build && SOURCE_DATE_EPOCH=1781049600 node dist/cli.js generate --config fixtures/vuetify-demo/dspack-export.config.json"
+    "generate:fixture:vue": "npm run build && SOURCE_DATE_EPOCH=1781049600 node dist/cli.js generate --config fixtures/vuetify-demo/dspack-export.config.json",
+    "check:sync": "node scripts/check-sync.mjs"
   },
   "dependencies": {
     "@babel/parser": "^7.28.5",
@@ -61,5 +61,11 @@
     "tailwind-merge": "^2.6.0",
     "vitest": "^3.0.0",
     "vue": "^3.5.38"
-  }
+  },
+  "files": [
+    "dist",
+    "src/emit/schema",
+    "README.md",
+    "LICENSE"
+  ]
 }

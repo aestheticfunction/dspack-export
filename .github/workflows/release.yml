@@ -1,0 +1,48 @@
+name: release
+
+# Publishes @aestheticfunction/dspack-export to npm when a version tag is
+# pushed. Mirrors ds-mcp's release workflow (which mirrors dspack-gen's).
+#
+# Auth: npm trusted publishing (OIDC) — no NPM_TOKEN secret in the repo.
+# One-time setup on npmjs.com (package settings -> Trusted publisher):
+#   repository aestheticfunction/dspack-export, workflow release.yml.
+# Provenance attestations are generated automatically for trusted publishes.
+#
+# Guards:
+#   - tag must equal the package.json version (prevents accidental mismatches)
+#   - full test suite + schema drift check run before publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC for npm trusted publishing / provenance
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          # Node 24 bundles npm >= 11.5, the minimum for OIDC trusted
+          # publishing (see dspack-gen v0.1.1's E404 incident).
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - name: Verify tag matches package.json version
+        run: |
+          pkg="$(node -p "require('./package.json').version")"
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$pkg" != "$tag" ]; then
+            echo "tag v$tag does not match package.json version $pkg" >&2
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: npm run check:sync
+      - name: Publish (public, with provenance)
+        run: npm publish --access public
