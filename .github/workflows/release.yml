@@ -11,6 +11,14 @@ name: release
 # Guards:
 #   - tag must equal the package.json version (prevents accidental mismatches)
 #   - full test suite + schema drift check run before publish
+#
+# Operational note (dspack-spec v0.4.1 incident): a successful trusted
+# publish may temporarily APPEAR to fail because of registry
+# read-after-write propagation — the publish lands but the CLI's
+# post-publish lookup 404s. Before retrying an apparently failed
+# publication, check the package version, dist.attestations, and registry
+# availability directly. Do not retry solely on a post-publish metadata
+# lookup failure: a second run may hit an immutable-version conflict.
 
 on:
   push:
