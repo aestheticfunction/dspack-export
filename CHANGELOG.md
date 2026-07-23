@@ -25,6 +25,11 @@ first npm-published release.
 - CI (`test.yml`) and tag-triggered OIDC trusted publishing (`release.yml`),
   mirroring ds-mcp/dspack-gen.
 
+Release note: 0.3.0 itself was published manually (npm's trusted-publisher
+flow needed the package to exist first); the trusted publisher is now
+registered, and OIDC publishing is exercised from the next versioned
+release onward.
+
 ## 0.2.0-alpha.0
 
 Unpublished baseline: v0.2 snapshot generation (React + Tailwind/shadcn and
